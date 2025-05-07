@@ -48,7 +48,7 @@
 ## **Tech Stack**
 
 - **Frontend:** React.js, HTML, CSS, JavaScript
-- **Backend:** Node.js with Express.js (or ASP.NET/Flask depending on the project)
+- **Backend:** ASP.NET
 - **Database:** MongoDB / SQL
 - **State Management:** Redux for global state handling
 - **Authentication:** JWT (JSON Web Tokens) for user authentication
@@ -61,42 +61,43 @@
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/SnapNBuy.git
+   git clone https://github.com/khushboosinghal25/SnapNBuy.git
    cd SnapNBuy
    ```
 
 2. **Frontend Setup:**
 
-   Navigate to the `/client` directory and install dependencies:
+   Navigate to the `/frontend` directory and install dependencies:
 
    ```bash
-   cd client
+   cd frontend
    npm install
    ```
 
 3. **Backend Setup:**
 
-   Navigate to the `/server` directory and install dependencies:
+   Navigate to the `/backend` directory and install dependencies:
 
    ```bash
-   cd server
-   npm install
+   cd backend
+   dotnet restore
+   dotnet run
    ```
 
 4. **Running the Application:**
 
-   Start the frontend and backend servers:
+   Start the frontend and backend backends:
 
    - **Frontend:** 
      ```bash
-     cd client
+     cd frontend
      npm start
      ```
 
    - **Backend:**
      ```bash
-     cd server
-     npm start
+     cd backend
+     dotnet run
      ```
 
    The application will be available at `http://localhost:3000` (for the frontend) and `http://localhost:5000` (for the backend).
@@ -107,17 +108,18 @@
 
 In the root directory, create a `.env` file for environment configurations:
 
-For **frontend** (`/client`), set the API endpoint:
+For **frontend** (`/frontend`), set the API endpoint:
 
 ```
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-For **backend** (`/server`), set up database and secret keys:
+For **backend** (`/backend`), set up database and secret keys:
 
 ```
-DB_URI=mongodb://localhost:27017/ecommerce
-JWT_SECRET=your-secret-key
+# SQL Database setup (for SQL Server or SQLite)
+dotnet ef migrations add InitialCreate
+dotnet ef database update
 ```
 
 ---
