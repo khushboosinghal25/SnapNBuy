@@ -1,15 +1,22 @@
-# Use the official .NET SDK image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+# Use official .NET SDK image for build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY . .
-RUN dotnet restore "./SnapNBuyBackend.csproj"
-RUN dotnet build "./SnapNBuyBackend.csproj" -c Release -o /app/build
-RUN dotnet publish "./SnapNBuyBackend.csproj" -c Release -o /app/publish
+# Copy csproj and restore
+COPY *.sln ./
+COPY back-end/*.csproj ./back-end/
+RUN dotnet restore ./back-end/back-end.csproj
 
-FROM base AS final
+# Copy all files and build
+COPY back-end/. ./back-end/
+WORKDIR /app/back-end
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
-COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "SnapNBuyBackend.dll"]
+COPY --from=build /app/back-end/out ./
+
+# Expose port and set entrypoint
+EXPOSE 80
+ENTRYPOINT ["dotnet", "back-end.dll"]
