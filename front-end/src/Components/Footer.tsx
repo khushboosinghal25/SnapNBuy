@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
                   <circle cx="19" cy="21" r="1" />
                   <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                 </svg>
-                <span className="text-lg font-bold">ProductHub</span>
+                <span className="text-lg font-bold">SnapNBuy</span>
               </div>
               <p className="text-sm text-gray-500">
                 Providing quality products since 2010. Your satisfaction is our priority.
@@ -87,14 +87,14 @@ const Footer: React.FC = () => {
               <ul className="space-y-2 text-sm">
                 <li className="text-gray-500">123 Product Street</li>
                 <li className="text-gray-500">Tech City, TC 12345</li>
-                <li className="text-gray-500">info@producthub.com</li>
+                <li className="text-gray-500">info@SnapNBuy.com</li>
                 <li className="text-gray-500">(123) 456-7890</li>
               </ul>
             </div>
           </div>
 
           <div className="border-t mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center">
-            <p className="text-sm text-gray-500">© {new Date().getFullYear()} ProductHub. All rights reserved.</p>
+            <p className="text-sm text-gray-500">© {new Date().getFullYear()} SnapNBuy. All rights reserved.</p>
             <div className="flex gap-4 mt-4 sm:mt-0">
               <a href="#" className="text-gray-500 hover:text-gray-800 transition-colors">
                 <svg
