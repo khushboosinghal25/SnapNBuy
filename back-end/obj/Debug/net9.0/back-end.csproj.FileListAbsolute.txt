@@ -498,3 +498,4 @@ C:\Users\KhushbooSinghalMAQSo\Downloads\E-commerce (2)\E-commerce\back-end\obj\D
 C:\Users\KhushbooSinghalMAQSo\Downloads\E-commerce (2)\E-commerce\back-end\obj\Debug\net9.0\back-end.pdb
 C:\Users\KhushbooSinghalMAQSo\Downloads\E-commerce (2)\E-commerce\back-end\obj\Debug\net9.0\back-end.genruntimeconfig.cache
 C:\Users\KhushbooSinghalMAQSo\Downloads\E-commerce (2)\E-commerce\back-end\obj\Debug\net9.0\ref\back-end.dll
+C:\Users\KhushbooSinghalMAQSo\Downloads\E-commerce (2)\E-commerce\back-end\obj\Debug\net9.0\back-end.sourcelink.json
