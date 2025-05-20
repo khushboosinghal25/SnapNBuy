@@ -31,7 +31,7 @@ const Shop: React.FC = () => {
         if (Array.isArray(data.$values)) {
           setProducts(data.$values);
           setFeaturedProducts(data.$values.filter((product: Product) => product.rating >= 4.0));
-          setTrendingProducts(data.$values.filter((product: Product) => product.price >= 200));
+          setTrendingProducts(data.$values.filter((product: Product) => product.rating >= 4.2));
         } else {
           console.error("Expected 'products' to be an array, but got:", data);
           setProducts([]);

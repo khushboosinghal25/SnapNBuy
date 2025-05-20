@@ -10,12 +10,12 @@ interface Coupon {
 }
 
 const SubscriptionPage: React.FC = () => {
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setUserCoupons, coupons } = useCoupons();
   const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(userData.subscriptionTier === 'Premium');
   const userId = userData.id;
 
   const handleSubscribe = async (subscriptionData: any) => {
@@ -29,6 +29,13 @@ const SubscriptionPage: React.FC = () => {
       setUserCoupons(response.data.coupons.$values);
 
       setIsSubscribed(true);
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({
+          ...userData,
+          subscriptionTier: 'Premium',
+        })
+      );
       navigate('/cart');
     } catch (err) {
       setError('Failed to subscribe. Please check your payment details and try again.');

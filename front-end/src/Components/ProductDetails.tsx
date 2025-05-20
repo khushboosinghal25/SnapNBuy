@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import axios from "axios"
 
@@ -27,9 +26,12 @@ interface Product {
   updatedAt: string
   reviews: Review[]
 }
+interface RouteParams extends Record<string, string | undefined> {
+  id: string
+}
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams()
+  const { id } = useParams<RouteParams>()
   const [product, setProduct] = useState<Product | null>(null)
   const [review, setReview] = useState("")
   const [rating, setRating] = useState(0)
@@ -41,6 +43,7 @@ const ProductDetail: React.FC = () => {
       try {
         const response = await axios.get(`http://localhost:5190/api/Product/${id}/reviews`)
         const data = response.data
+
         if (data.reviews && Array.isArray(data.reviews.$values)) {
           setProduct({
             ...data,
@@ -49,7 +52,6 @@ const ProductDetail: React.FC = () => {
         } else {
           setProduct(data)
         }
-        console.log("Product Data:", data)
       } catch (error) {
         console.error("Error fetching product details:", error)
       }
@@ -62,7 +64,6 @@ const ProductDetail: React.FC = () => {
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!product) return
 
     const reviewData = {
@@ -88,11 +89,13 @@ const ProductDetail: React.FC = () => {
 
   const toggleWishlist = async (productId: number) => {
     if (!product) return
+
     const selectedProduct = {
       name: product.name,
       imageUrl: product.imageUrl,
       price: product.price,
     }
+
     try {
       await axios.post("http://localhost:5190/api/Wishlist", selectedProduct, {
         headers: {
@@ -100,8 +103,8 @@ const ProductDetail: React.FC = () => {
         },
       })
 
-      setWishlist((prevWishlist) =>
-        prevWishlist.includes(productId) ? prevWishlist.filter((id) => id !== productId) : [...prevWishlist, productId],
+      setWishlist((prev) =>
+        prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
       )
       alert("Successfully added to WishList!")
     } catch (error) {
@@ -110,13 +113,15 @@ const ProductDetail: React.FC = () => {
     }
   }
 
-  const addToCart = async (productId: number) => {
+  const buyNow = async (productId: number) => {
     if (!product) return
+
     const selectedProduct = {
       name: product.name,
       imageUrl: product.imageUrl,
       price: product.price,
     }
+
     try {
       await axios.post("http://localhost:5190/api/Order", selectedProduct, {
         headers: {
@@ -124,8 +129,8 @@ const ProductDetail: React.FC = () => {
         },
       })
 
-      setCart((prevCart) =>
-        prevCart.includes(productId) ? prevCart.filter((id) => id !== productId) : [...prevCart, productId],
+      setCart((prev) =>
+        prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
       )
       alert("Order placed!")
     } catch (error) {
@@ -177,7 +182,7 @@ const ProductDetail: React.FC = () => {
               {wishlist.includes(product.productId) ? "In Wishlist" : "Add to Wishlist"}
             </button>
             <button
-              onClick={() => addToCart(product.productId)}
+              onClick={() => buyNow(product.productId)}
               className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300"
             >
               Buy Now
@@ -199,7 +204,7 @@ const ProductDetail: React.FC = () => {
                 max="5"
                 value={rating}
                 onChange={(e) => setRating(Number(e.target.value))}
-                required
+                
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               />
             </div>
@@ -256,4 +261,3 @@ const ProductDetail: React.FC = () => {
 }
 
 export default ProductDetail
-

@@ -33,7 +33,6 @@ const Cart: React.FC = () => {
   const [discountedTotal, setDiscountedTotal] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  // Effect for setting cart items from API
   useEffect(() => {
     const fetchCartItems = async () => {
       setIsLoading(true)
@@ -48,9 +47,7 @@ const Cart: React.FC = () => {
     }
     fetchCartItems()
 
-    // Retrieve the discount and coupons from localStorage on page load
     const storedTotal = localStorage.getItem("discountedTotal")
-
     if (storedTotal) {
       setDiscountedTotal(Number.parseFloat(storedTotal))
     }
@@ -81,29 +78,62 @@ const Cart: React.FC = () => {
     try {
       const productId = cartItems.find((cartItem) => cartItem.cartItemId === cartItemId)?.productId
       await axios.patch(`http://localhost:5190/api/Cart/${cartItemId}`, {
-      cartItemId: cartItemId,
-      productId: productId,
-      quantity: newQuantity,
+        cartItemId: cartItemId,
+        productId: productId,
+        quantity: newQuantity,
       })
     } catch (error) {
       console.error("Error updating quantity on server:", error)
     }
   }
 
-  // Calculate total price with or without discount
+  const handlePlaceOrder = async () => {
+    if (cartItems.length === 0) {
+      alert("Cart is empty.")
+      return
+    }
+  
+    const storedUserData = JSON.parse(localStorage.getItem("User") || "{}")
+    const userId = storedUserData?.id
+  
+    const items = cartItems.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+    }))
+  
+    const totalAmount = cartItems
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+      .toFixed(2)
+  
+    const orderData = {
+      customerId: parseInt(userId),
+      items: items,
+      totalAmount: totalAmount,
+    }
+  
+    try {
+      await axios.post("http://localhost:5190/api/Order", orderData)
+  
+      alert("Order placed successfully!")
+      localStorage.removeItem("cart")
+      localStorage.removeItem("coupons")
+      setCartItems([])
+    } catch (err) {
+      console.error("Order placement failed", err)
+      alert("Failed to place order. Please try again.")
+    }
+  }
+  
   const calculateTotal = () => {
     let total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
 
     if (coupons.length > 0) {
       const discount = coupons.reduce((sum: number, coupon: Coupon) => sum + coupon.discountAmount, 0)
-      total -= (total * discount) / 100
-
-      console.log("Discount applied:", discount)
-
-      // Save the discounted total and coupons to localStorage
-      localStorage.setItem("discountedTotal", total.toFixed(2))
-      localStorage.setItem("coupons", JSON.stringify(coupons))
+      total -= discount
     }
+
+    localStorage.setItem("discountedTotal", total.toFixed(2))
+    localStorage.setItem("coupons", JSON.stringify(coupons))
 
     return total.toFixed(2)
   }
@@ -181,14 +211,19 @@ const Cart: React.FC = () => {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium text-gray-900">Total</h3>
               <p className="text-2xl font-bold text-primary">
-                ${discountedTotal ? discountedTotal.toFixed(2) : calculateTotal()}
+                ${calculateTotal()}
               </p>
             </div>
 
-            {coupons.length > 0 && <div className="mt-2 text-sm text-green-600">Discount applied</div>}
+            {coupons.length > 0 && (
+              <div className="mt-2 text-sm text-green-600">Discount applied: ${discountedTotal}</div>
+            )}
 
             <div className="mt-6">
-              <button className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-md transition-colors">
+              <button
+                className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-md transition-colors"
+                onClick={handlePlaceOrder}
+              >
                 Proceed to Checkout
               </button>
             </div>
@@ -209,9 +244,10 @@ const Cart: React.FC = () => {
           <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
           <p className="text-gray-500 mb-6">Looks like you haven't added any products to your cart yet.</p>
           <Link to="/shop">
-          <button className="inline-flex items-center px-4 py-2 border border-primary text-primary bg-white hover:bg-primary/5 font-medium rounded-md transition-colors">
-            Continue Shopping
-          </button></Link>
+            <button className="inline-flex items-center px-4 py-2 border border-primary text-primary bg-white hover:bg-primary/5 font-medium rounded-md transition-colors">
+              Continue Shopping
+            </button>
+          </Link>
         </div>
       )}
     </div>
@@ -219,4 +255,3 @@ const Cart: React.FC = () => {
 }
 
 export default Cart
-
